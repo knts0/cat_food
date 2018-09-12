@@ -1,34 +1,30 @@
 <template>
   <div>
-    <!-- 新規作成部分 -->
     <div>
-      <!--<div>
-        <input class="form-control" placeholder="Add your task!!">
-      </div>
-      <div class="col s2 m1">
-        <div class="btn-floating waves-effect waves-light red">
-          <i class="material-icons">add</i>
-        </div>
-      </div>-->
+      <h1>ねこえさログ</h1>
     </div>
     <!-- リスト表示部分 -->
     <div>
-      <table>
+      <table class="table table-striped table-bordered" style="table-layout:fixed;">
         <thead>
           <tr>
-            <th>時刻</th>
-            <th>猫1</th>
+            <th class="col-md-2"></th>
+            <th class="col-md-3">
+              <img src="../../../assets/images/cat1.png" alt="Rails logo" style="width:70px;height:70px;"><br>
+              猫1
+            </th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="log in logs" class="collection-item">
-          </tr>
-          <tr v-for="(value, key) in time_logs" class="collection-item">
-            <td>{{ key }}</td>
+          <tr v-for="(value, key) in time_logs">
+            <td class="col-md-2">{{ key }}</td>
 
-            <td>
-              <label v-if="!value.done"><button v-on:click="createLog(key)">x</button></label>
-              <label v-if="value.done"><button v-on:click="deleteLog(key)">o</button></label>
+            <td class="col-md-3">
+                <img v-show="!value.done" src="../../../assets/images/pet_esa_sara_full_gray.png" alt="まだ餌をあげてないよ" style="width:70px;height:70px;" v-on:click="createLog(key)">
+                <!--<button v-on:click="createLog(key)">x</button>-->
+                <img v-if="value.done" src="../../../assets/images/pet_esa_sara_full.png" alt="もう餌をあげたよ" style="width:70px;height:70px;" v-on:click="deleteLog(key)">
+                <!--<button v-on:click="deleteLog(key)">o</button>-->
+              </label>
             </td>
 
           </tr>
@@ -45,10 +41,24 @@
   export default {
     data: function () {
       return {
+        time_logs: {
+          '08:00': {'done': false, 'log_id': undefined},
+          '09:00': {'done': false, 'log_id': undefined},
+          '10:00': {'done': false, 'log_id': undefined},
+          '11:00': {'done': false, 'log_id': undefined},
+          '12:00': {'done': false, 'log_id': undefined},
+          '13:00': {'done': false, 'log_id': undefined},
+          '14:00': {'done': false, 'log_id': undefined},
+          '15:00': {'done': false, 'log_id': undefined},
+          '16:00': {'done': false, 'log_id': undefined},
+          '17:00': {'done': false, 'log_id': undefined},
+          '18:00': {'done': false, 'log_id': undefined},
+          '19:00': {'done': false, 'log_id': undefined},
+          '20:00': {'done': false, 'log_id': undefined},
+          '21:00': {'done': false, 'log_id': undefined},
+          '22:00': {'done': false, 'log_id': undefined}
+          },
         logs: [],
-        ids: {},
-        time_logs: {},
-        newLog: '',
       }
     },
     mounted: function () {
@@ -61,24 +71,16 @@
             this.logs.push(response.data.logs[i]);
           }
           var array = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
-          for (var time of array) {
-            this.time_logs[time] = {};
-            this.time_logs[time]['done'] = false;
-            this.time_logs[time]['log_id'] = undefined;
-            this.ids[time] = undefined;
-          }
           for (var log of this.logs) {
             console.log(log['fed_at']);
             this.time_logs[log['fed_at']]['done'] = true;
             this.time_logs[log['fed_at']]['log_id'] = log.id;
-            this.ids[time] = log.id;
-            //console.log(this.ids[time] + ": " + this.time_logs[log['fed_at']]);
           };
-          /*for (var key in this.time_logs) {
+          for (var key in this.time_logs) {
             console.log("key is: " + key);
             console.log("done is: " + this.time_logs[key]['done']);
             console.log("log_id is: " + this.time_logs[key]['log_id'] + "\n");
-          }*/
+          }
 
         }, (error) => {
           console.log(error);
@@ -94,7 +96,6 @@
           this.time_logs[fed_at]['done'] = true;
           console.log(response.data.log.id);
           this.time_logs[fed_at]['log_id'] = response.data.log.id;
-          //console.log(this.time_logs[fed_at]);
         }, (error) => {
           console.log(error);
         });
@@ -103,8 +104,6 @@
         this.logs.forEach( function(log) {
           console.log(log);
         });
-        //console.log(this.time_logs.filter( (log) => log['fed_at'] === fed_at));
-        //var log = this.time_logs.filter( (log) => log['fed_at'] === fed_at)[0];
         var log_id = this.time_logs[fed_at]['log_id'];
         console.log(log_id);
 
