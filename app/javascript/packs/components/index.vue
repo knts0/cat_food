@@ -95,10 +95,13 @@
         });
       },
       createLog: function (fed_at) {
+        console.log(new Date(Date.UTC(this.date.getYear(), this.date.getMonth(), this.date.getDate())));
+        console.log(new Date(Date.UTC(this.date.getYear(), this.date.getMonth(), this.date.getDate(), Number(fed_at.substr(0,2)), Number(fed_at.substr(3,2)),0, 0)));
+        var fed_at_datetime = this.date.getFullYear().toString() + '-' + ('0' + (this.date.getMonth() + 1)).slice(-2).toString() + '-' + ('0' + this.date.getDate()).slice(-2) + ' ' + fed_at;
         axios.post('/api/logs', {
           cat_id: 1,
           feed_id: 1,
-          fed_at: fed_at
+          fed_at: fed_at_datetime
         }).then((response) => {
           this.logs.unshift(response.data.log);
           this.time_logs[fed_at]['done'] = true;
