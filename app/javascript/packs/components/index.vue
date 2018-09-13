@@ -1,29 +1,31 @@
 <template>
   <div>
     <div>
-      <h1>ねこえさログ</h1>
+      <h1>ねこえさログ📝</h1>
+      <h4>
+        <span style="cursor:pointer;" class="glyphicon glyphicon-chevron-left text-primary" v-on:click="fetchLogs(new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1))"></span>
+        {{ date.getFullYear() }}年 {{ date.getMonth() + 1 }}月 {{ date.getDate() }}日
+        <span style="cursor:pointer;" class="glyphicon glyphicon-chevron-right text-primary" v-on:click="fetchLogs(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1))"></span>
+      </h4>
     </div>
-    <!-- リスト表示部分 -->
     <div>
-      <table class="table table-striped table-bordered" style="table-layout:fixed;">
+      <table>
         <thead>
           <tr>
-            <th class="col-md-2"></th>
-            <th class="col-md-3">
-              <img src="../../../assets/images/cat1.png" alt="Rails logo" style="width:70px;height:70px;"><br>
-              猫1
+            <th class="time-col"></th>
+            <th class="cat-col">
+              <img src="../../../assets/images/cat1.png" alt="Rails logo" style="width:50px;height:50px;"><br>
+              たろう
             </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(value, key) in time_logs">
-            <td class="col-md-2">{{ key }}</td>
+            <td class="time-col">{{ key }}</td>
 
-            <td class="col-md-3">
-                <img v-show="!value.done" src="../../../assets/images/pet_esa_sara_full_gray.png" alt="まだ餌をあげてないよ" style="width:70px;height:70px;" v-on:click="createLog(key)">
-                <!--<button v-on:click="createLog(key)">x</button>-->
-                <img v-if="value.done" src="../../../assets/images/pet_esa_sara_full.png" alt="もう餌をあげたよ" style="width:70px;height:70px;" v-on:click="deleteLog(key)">
-                <!--<button v-on:click="deleteLog(key)">o</button>-->
+            <td class="cat-col">
+                <img v-show="!value.done" src="../../../assets/images/pet_esa_sara_full_gray.png" alt="まだ餌をあげてないよ" style="width:50px;height:50px;cursor:pointer;"  v-on:click="createLog(key)">
+                <img v-show="value.done" src="../../../assets/images/pet_esa_sara_full.png" alt="もう餌をあげたよ"  style="width:50px;height:50px;cursor:pointer;" v-on:click="deleteLog(key)">
               </label>
             </td>
 
@@ -59,28 +61,34 @@
           '22:00': {'done': false, 'log_id': undefined}
           },
         logs: [],
+        date: new Date()
       }
     },
     mounted: function () {
-      this.fetchLogs();
+      this.fetchLogs(new Date());
     },
     methods: {
-      fetchLogs: function () {
-        axios.get('/api/logs').then((response) => {
+      fetchLogs: function (date) {
+        this.date = date;
+        axios.get('/api/logs', {
+          params: {
+            year: date.getFullYear(),
+            month: date.getMonth()+1,
+            date: date.getDate()
+          }
+        }).then((response) => {
+          this.logs = [];
           for(var i = 0; i < response.data.logs.length; i++) {
             this.logs.push(response.data.logs[i]);
           }
-          var array = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+          for (var key in this.time_logs) {
+            this.time_logs[key]['done'] = false;
+            this.time_logs[key]['log_id'] = undefined;
+          }
           for (var log of this.logs) {
-            console.log(log['fed_at']);
             this.time_logs[log['fed_at']]['done'] = true;
             this.time_logs[log['fed_at']]['log_id'] = log.id;
           };
-          for (var key in this.time_logs) {
-            console.log("key is: " + key);
-            console.log("done is: " + this.time_logs[key]['done']);
-            console.log("log_id is: " + this.time_logs[key]['log_id'] + "\n");
-          }
 
         }, (error) => {
           console.log(error);
@@ -94,18 +102,13 @@
         }).then((response) => {
           this.logs.unshift(response.data.log);
           this.time_logs[fed_at]['done'] = true;
-          console.log(response.data.log.id);
           this.time_logs[fed_at]['log_id'] = response.data.log.id;
         }, (error) => {
           console.log(error);
         });
       },
       deleteLog: function (fed_at) {
-        this.logs.forEach( function(log) {
-          console.log(log);
-        });
         var log_id = this.time_logs[fed_at]['log_id'];
-        console.log(log_id);
 
         axios.delete('/api/logs/' + log_id).then((response) => {
           var idx = this.logs.findIndex( function(log) {

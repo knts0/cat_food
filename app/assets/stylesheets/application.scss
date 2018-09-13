@@ -1,7 +1,38 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
 
-th, td {
+h4 {
+  text-align:center;
+  margin-bottom: 30px;
+}
+
+table {
+  margin: 0 auto;
+  border: solid 1px #eee;
+  border-collapse: collapse;
+  padding: 10px;
+
+  .time-col {
+    border: solid 1px #eee;
+    text-align: center;
+    width: 100px;
+    padding: 10px;
+  }
+
+  .cat-col {
+    border: solid 1px #eee;
+    text-align: center;
+    width: 150px;
+    padding: 10px;
+  }
+}
+
+footer {
+  margin: 30px;
   text-align: center;
 }

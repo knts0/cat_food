@@ -2,8 +2,8 @@ class Api::LogsController < ApplicationController
   #skip_before_action :verify_authenticity_token
   # GET /tasks
   def index
-    puts Time.now.beginning_of_day.gmtime
-    @logs = Log.where('fed_at >= ?', Time.now.beginning_of_day.gmtime).order('fed_at ASC')
+    begin_time = Time.local(params[:year], params[:month], params[:date]).beginning_of_day.gmtime
+    @logs = Log.where('fed_at >= ? and fed_at < ?', begin_time, begin_time.tomorrow).order('fed_at ASC')
   end
 
   # POST /logs
