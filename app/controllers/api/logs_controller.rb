@@ -2,7 +2,7 @@ class Api::LogsController < ApplicationController
   #skip_before_action :verify_authenticity_token
   # GET /tasks
   def index
-    puts begin_time = Time.local(params[:year], params[:month], params[:date]).beginning_of_day.utc
+    puts begin_time = Time.zone.local(params[:year], params[:month], params[:date]).beginning_of_day.utc
     @logs = Log.where('fed_at >= ? and fed_at < ?', begin_time.to_s(:db), begin_time.tomorrow.to_s(:db)).order('fed_at ASC')
   end
 
