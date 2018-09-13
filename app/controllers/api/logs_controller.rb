@@ -1,9 +1,9 @@
 class Api::LogsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  #skip_before_action :verify_authenticity_token
   # GET /tasks
   def index
-    # 後々のため、更新順で返します
-    @logs = Log.where('fed_at >= ?', Time.zone.now.beginning_of_day).order('fed_at ASC') #あとでwhere条件（今日のデータのみ取得）を追加する
+    puts Time.now.beginning_of_day.gmtime
+    @logs = Log.where('fed_at >= ?', Time.now.beginning_of_day.gmtime).order('fed_at ASC')
   end
 
   # POST /logs
