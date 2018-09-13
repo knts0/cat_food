@@ -14,8 +14,8 @@ module Cat
     # 表示時のタイムゾーンをJSTに設定
     #config.time_zone = 'Tokyo'
 
-    # DB保存時のタイムゾーンをJSTに設定
-    # config.active_record.default_timezone = :local
+    # DB保存時のタイムゾーンをUTCに設定
+    config.active_record.default_timezone = :utc
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
